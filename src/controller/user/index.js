@@ -1,4 +1,5 @@
 import userModel from "../../model/user/index.js";
+import tokenModel from "../../model/token/token.js";
 import { compare, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -13,7 +14,7 @@ const userController = {
       });
       if (userCheck) {
         return res.status(400).json({
-          message: "Invalid credentials",
+          message: "user with this email already exists",
         });
       }
       const hpassword = await hash(payload.password, 10);
@@ -40,7 +41,7 @@ const userController = {
         },
       });
       if (!userCheck) {
-        res.status(400).json({
+        return res.status(400).json({
           message: "Invalid credentials",
         });
       }
@@ -49,7 +50,7 @@ const userController = {
         userCheck.password
       );
       if (!comparePassword) {
-        res.status(400).json({
+        return res.status(400).json({
           message: "Invalid credentials",
         });
       }
@@ -58,9 +59,14 @@ const userController = {
         name: userCheck.name,
         email: userCheck.email,
       };
-      const token = jwt.sign(data, "jdkgjj");
+      const token = jwt.sign(data, process.env.PRIVATE_KEY);
+
+      await tokenModel.create({
+        token: token,
+      });
       res.json(token);
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         message: "Internal server error",
       });
