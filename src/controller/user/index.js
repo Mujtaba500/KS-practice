@@ -57,14 +57,13 @@ const userController = {
       const data = {
         id: userCheck.id,
         name: userCheck.name,
-        email: userCheck.email,
       };
       const token = jwt.sign(data, process.env.PRIVATE_KEY);
 
       await tokenModel.create({
         token: token,
       });
-      res.json(token);
+      res.json({ data: data, token: token });
     } catch (err) {
       console.log(err);
       res.status(500).json({

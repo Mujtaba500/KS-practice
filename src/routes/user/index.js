@@ -1,11 +1,11 @@
 import userController from "../../controller/user/index.js";
 import { Router } from "express";
-import middlewareAuth from "../../middleware/auth.js";
+import authValidator from "../../validators/auth/index.js";
 
 const userRouter = Router();
 
-userRouter.post("/auth/signup", userController.signUp);
+userRouter.post("/auth/signup", authValidator.signUp, userController.signUp);
 
-userRouter.post("/auth/signin", middlewareAuth, userController.signIn);
+userRouter.post("/auth/signin", authValidator.signIn, userController.signIn);
 
 export default userRouter;

@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import tokenModel from "../model/token/token.js";
 
-const middlewareAuth = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
   let token = req.headers.authorization;
 
   if (!token) {
     return res.status(401).json({ message: "UnAuthorized" });
   }
+
   token = token.replace("Bearer ", "");
 
   const tokenDb = await tokenModel.findOne({
@@ -27,4 +28,4 @@ const middlewareAuth = async (req, res, next) => {
   }
 };
 
-export default middlewareAuth;
+export default verifyToken;
